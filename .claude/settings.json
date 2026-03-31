@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo:*)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest init --yes)",
+      "Bash(npm run:*)",
+      "Bash(nvm --version)",
+      "Read(//Users/daymel/.nvm/**)",
+      "Bash(node -e \"const tw = require\\(''/Users/daymel/Code/My/next_js/virtual_garage/node_modules/tailwindcss/package.json''\\); console.log\\(tw.version\\)\")",
+      "Bash(cat -n /Users/daymel/Code/My/next_js/virtual_garage/app/\\\\\\(auth\\\\\\)/login/page.tsx)"
+    ],
+    "additionalDirectories": [
+      "/Users/daymel/Code/My/next_js/virtual_garage",
+      "/Users/daymel/Code/My/next_js/virtual_garage/app/(auth)"
+    ]
+  }
+}

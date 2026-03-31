@@ -1,26 +1,105 @@
 @import "tailwindcss";
 
+/* ─── Tokens de diseño ─────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Color — primarios */
+  --color-primary:       hsl(220, 70%, 50%);
+  --color-primary-dark:  hsl(220, 70%, 20%);
+  --color-primary-light: hsl(220, 70%, 90%);
+
+  /* Color — acento y semánticos */
+  --color-accent:   hsl(280, 55%, 45%);
+  --color-info:     hsl(174, 100%, 29%);
+  --color-success:  hsl(123, 43%, 48%);
+  --color-warning:  hsl(36,  100%, 50%);
+  --color-error:    hsl(6,   78%,  57%);
+
+  /* Color — neutros */
+  --color-neutral-50:  hsl(220, 15%, 97%);
+  --color-neutral-100: hsl(220, 12%, 93%);
+  --color-neutral-300: hsl(220, 10%, 75%);
+  --color-neutral-500: hsl(220, 8%,  50%);
+  --color-neutral-700: hsl(220, 8%,  30%);
+  --color-neutral-900: hsl(220, 10%, 10%);
+
+  /* Tipografía */
+  --font-family: 'Inter', sans-serif;
+  --fs-display:  3rem;      /* 48px */
+  --fs-heading:  2rem;      /* 32px */
+  --fs-body:     1.125rem;  /* 18px */
+  --fs-caption:  0.875rem;  /* 14px */
+
+  --lh-display:  1.1;
+  --lh-heading:  1.25;
+  --lh-body:     1.6;
+  --lh-caption:  1.4;
+
+  --fw-bold:     700;
+  --fw-semibold: 600;
+  --fw-regular:  400;
+
+  /* Espaciado (grid de 8px) */
+  --space-1: 0.25rem;   /* 4px  */
+  --space-2: 0.5rem;    /* 8px  */
+  --space-3: 1rem;      /* 16px */
+  --space-4: 1.5rem;    /* 24px */
+  --space-5: 2rem;      /* 32px */
+  --space-6: 3rem;      /* 48px */
+  --space-7: 4rem;      /* 64px */
+  --space-8: 6rem;      /* 96px */
+
+  /* Border radius */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
 }
 
+/* ─── Tailwind theme ──────────────────────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colores */
+  --color-background:    var(--color-neutral-50);
+  --color-foreground:    var(--color-neutral-900);
+
+  --color-primary:       var(--color-primary);
+  --color-primary-dark:  var(--color-primary-dark);
+  --color-primary-light: var(--color-primary-light);
+
+  --color-accent:        var(--color-accent);
+  --color-info:          var(--color-info);
+  --color-success:       var(--color-success);
+  --color-warning:       var(--color-warning);
+  --color-error:         var(--color-error);
+
+  --color-neutral-50:    var(--color-neutral-50);
+  --color-neutral-100:   var(--color-neutral-100);
+  --color-neutral-300:   var(--color-neutral-300);
+  --color-neutral-500:   var(--color-neutral-500);
+  --color-neutral-700:   var(--color-neutral-700);
+  --color-neutral-900:   var(--color-neutral-900);
+
+  /* Tipografía — font-size utilities: text-display, text-heading, text-body, text-caption */
+  --text-display: var(--fs-display);
+  --text-heading: var(--fs-heading);
+  --text-body:    var(--fs-body);
+  --text-caption: var(--fs-caption);
+
+  /* Line-height utilities: leading-display, leading-heading, leading-body, leading-caption */
+  --leading-display: var(--lh-display);
+  --leading-heading: var(--lh-heading);
+  --leading-body:    var(--lh-body);
+  --leading-caption: var(--lh-caption);
+
+  /* Border radius utilities: rounded-sm, rounded-md, rounded-lg */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ─── Base ────────────────────────────────────────────────────────────────── */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-neutral-50);
+  color: var(--color-neutral-900);
+  font-family: var(--font-family);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
 }
