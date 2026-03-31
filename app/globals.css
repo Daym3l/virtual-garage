@@ -50,8 +50,16 @@
 
   /* Border radius */
   --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+
+  /* Superficies bento (jerarquía sin bordes) */
+  --color-surface:               hsl(230, 100%, 99%);   /* fondo de página */
+  --color-surface-low:           hsl(222, 100%, 95%);   /* contenedores grandes */
+  --color-surface-high:          hsl(220, 40%, 92%);    /* chips, hover */
+  --color-surface-card:          #ffffff;               /* cards y módulos */
+  --color-on-surface-muted:      hsl(220, 8%, 42%);     /* texto secundario */
+  --color-outline-subtle:        hsl(220, 20%, 88%);    /* borde fantasma */
 }
 
 /* ─── Tailwind theme ──────────────────────────────────────────────────────── */
@@ -89,10 +97,18 @@
   --leading-body:    var(--lh-body);
   --leading-caption: var(--lh-caption);
 
-  /* Border radius utilities: rounded-sm, rounded-md, rounded-lg */
+  /* Border radius utilities */
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
+
+  /* Superficies */
+  --color-surface:          var(--color-surface);
+  --color-surface-low:      var(--color-surface-low);
+  --color-surface-high:     var(--color-surface-high);
+  --color-surface-card:     var(--color-surface-card);
+  --color-on-surface-muted: var(--color-on-surface-muted);
+  --color-outline-subtle:   var(--color-outline-subtle);
 }
 
 /* ─── Base ────────────────────────────────────────────────────────────────── */
