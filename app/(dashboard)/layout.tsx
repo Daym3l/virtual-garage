@@ -12,7 +12,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Contenido principal */}
         <div className="lg:ml-64">
-          <main className="max-w-[1200px] mx-auto px-4 py-6 pb-24 lg:pb-6">
+          <main className="max-w-[1200px] mx-auto px-4 lg:px-8 pt-4 lg:pt-16 pb-24 lg:pb-12">
             {children}
           </main>
         </div>
