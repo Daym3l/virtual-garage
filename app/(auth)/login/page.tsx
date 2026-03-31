@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Shield, Cloud, Smartphone } from 'lucide-react'
+import { Shield, SatelliteDish, Smartphone } from 'lucide-react'
 import { signInWithGoogle } from '@/lib/firebase/auth'
 
 export default function LoginPage() {
@@ -137,7 +137,7 @@ export default function LoginPage() {
           <div className="grid grid-cols-3 gap-(--space-3)">
             {[
               { icon: <Shield className="w-5 h-5 text-neutral-500" />, label: 'Seguro' },
-              { icon: <Cloud className="w-5 h-5 text-neutral-500" />, label: 'En la nube' },
+              { icon: <SatelliteDish className="w-5 h-5 text-neutral-500" />, label: 'Remoto' },
               { icon: <Smartphone className="w-5 h-5 text-neutral-500" />, label: 'Sincronizado' },
             ].map(({ icon, label }) => (
               <div
@@ -145,7 +145,7 @@ export default function LoginPage() {
                 className="flex flex-col items-center gap-(--space-2) p-(--space-3) rounded-md bg-white border border-neutral-100 text-center"
               >
                 {icon}
-                <span className=" text-neutral-500 font-semibold text-sm">{label}</span>
+                <span className=" text-neutral-500 font-semibold lg:text-sm text-xs">{label}</span>
               </div>
             ))}
           </div>
