@@ -41,9 +41,9 @@ export default function Sidebar() {
         <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
           <Car className="w-5 h-5 text-white" />
         </div>
-        <div>
+        <div className="flex flex-col items-start justify-start">
           <span className="font-black text-on-surface tracking-tighter text-base leading-tight block">Garaje Virtual</span>
-          <span className="text-[10px] uppercase tracking-widest font-bold text-primary">by Daym3l M. C.</span>
+          <span className="pl-0.5 text-[10px] uppercase tracking-widest font-bold text-primary">by Daym3l M. C.</span>
         </div>
       </div>
 

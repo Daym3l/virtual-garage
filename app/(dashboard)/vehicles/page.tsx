@@ -5,6 +5,7 @@ import { Plus, Car, Gauge, Calendar, Trash2, Pencil } from 'lucide-react'
 import { useState } from 'react'
 import { useVehicles } from '@/hooks/useVehicles'
 import { formatMileage, formatDate } from '@/lib/utils/formatters'
+import { toImageSrc } from '@/lib/utils/image'
 import type { Vehicle } from '@/types'
 
 export default function VehiclesPage() {
@@ -111,7 +112,7 @@ function VehicleCard({
       <div className="relative h-40 bg-neutral-100 flex items-center justify-center">
         {vehicle.imageBase64 ? (
           <img
-            src={vehicle.imageBase64}
+            src={toImageSrc(vehicle.imageBase64)}
             alt={`${vehicle.brand} ${vehicle.model}`}
             className="w-full h-full object-cover"
           />

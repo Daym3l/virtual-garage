@@ -1,3 +1,12 @@
+/**
+ * Asegura que un string base64 tenga el prefijo data URL necesario para <img src>.
+ * La app Flutter puede guardar solo el base64 sin prefijo.
+ */
+export function toImageSrc(base64: string): string {
+  if (base64.startsWith('data:')) return base64
+  return `data:image/jpeg;base64,${base64}`
+}
+
 export async function compressImage(file: File, maxSize = 800, quality = 0.8): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image()

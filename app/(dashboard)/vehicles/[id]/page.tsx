@@ -8,6 +8,7 @@ import {
   ArrowLeft, Pencil, Car, Gauge, Calendar,
   Wrench, Fuel, Map, Bell, BarChart2, Route,
 } from 'lucide-react'
+import { toImageSrc } from '@/lib/utils/image'
 import { getVehicle } from '@/lib/firestore/vehicles'
 import { formatMileage, formatDate } from '@/lib/utils/formatters'
 import type { Vehicle } from '@/types'
@@ -85,7 +86,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
         <div className="h-52 bg-neutral-100 flex items-center justify-center">
           {vehicle.imageBase64 ? (
             <img
-              src={vehicle.imageBase64}
+              src={toImageSrc(vehicle.imageBase64)}
               alt={`${vehicle.brand} ${vehicle.model}`}
               className="w-full h-full object-cover"
             />

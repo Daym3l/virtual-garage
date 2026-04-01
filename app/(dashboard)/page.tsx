@@ -1,10 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { Fuel, Wrench, ChevronDown, TrendingUp, AlertTriangle, CheckCircle2, Gauge, PlusCircle, Car } from 'lucide-react'
+import { Fuel, Wrench, ChevronDown, TrendingUp, Gauge, PlusCircle, Car } from 'lucide-react'
 import { useVehicles } from '@/hooks/useVehicles'
 import { useAppStore } from '@/store/app-store'
+import { useMonthlyMileage } from '@/hooks/useMonthlyMileage'
+import { useMonthlyFuel } from '@/hooks/useMonthlyFuel'
 import ConsumptionChart from './_components/consumption-chart'
+import { toImageSrc } from '@/lib/utils/image'
 
 // ─── Dummy alert data until alerts module is built ────────────────────────────
 const mockAlerts = [
@@ -25,6 +28,8 @@ export default function DashboardPage() {
   const setSelectedVehicleId = useAppStore((s) => s.setSelectedVehicleId)
 
   const selectedVehicle = vehicles.find((v) => v.id === selectedVehicleId) ?? vehicles[0]
+  const { kmThisMonth } = useMonthlyMileage(selectedVehicle?.id)
+  const { stats: fuelStats } = useMonthlyFuel(selectedVehicle?.id)
 
   // ── Empty state ─────────────────────────────────────────────────────────────
   if (!loading && vehicles.length === 0) {
@@ -91,44 +96,39 @@ export default function DashboardPage() {
               </div>
             </div>
           ) : selectedVehicle ? (
-            <div className="flex items-center gap-6">
-              {/* Vehicle thumbnail */}
-              <div className="relative shrink-0">
-                <div className="w-24 h-16 bg-neutral-100 rounded-lg overflow-hidden flex items-center justify-center">
-                  {selectedVehicle.imageBase64 ? (
-                    <img
-                      src={selectedVehicle.imageBase64}
-                      alt={selectedVehicle.nickname}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <svg viewBox="0 0 24 24" className="w-10 h-10 text-neutral-300" fill="currentColor">
-                      <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
-                    </svg>
-                  )}
-                </div>
-                <div className="absolute -bottom-2 -right-2 bg-white p-0.5 rounded-full shadow-md">
-                  <CheckCircle2 className="w-4 h-4 text-primary fill-primary/20" />
-                </div>
+            <div className="flex items-stretch gap-5 w-full h-full">
+              {/* Imagen */}
+              <div className="shrink-0 w-36 bg-neutral-100 rounded-xl overflow-hidden flex items-center justify-center self-stretch">
+                {selectedVehicle.imageBase64 ? (
+                  <img
+                    src={toImageSrc(selectedVehicle.imageBase64)}
+                    alt={`${selectedVehicle.brand} ${selectedVehicle.model}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <svg viewBox="0 0 24 24" className="w-12 h-12 text-neutral-300" fill="currentColor">
+                    <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z" />
+                  </svg>
+                )}
               </div>
 
-              {/* Vehicle info */}
-              <div className="min-w-0 flex-1">
-                <p className="text-[10px] uppercase tracking-widest font-bold text-on-surface-muted mb-1">
-                  Vehículo Seleccionado
+              {/* Info */}
+              <div className="flex flex-col justify-center gap-1 min-w-0 flex-1">
+                <p className="text-[10px] uppercase tracking-widest font-bold text-on-surface-muted">Vehículo seleccionado</p>
+                <p className="text-2xl font-black text-on-surface tracking-tight leading-tight">
+                  {selectedVehicle.brand} {selectedVehicle.model}
                 </p>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-2xl font-black text-on-surface tracking-tight">
-                    {selectedVehicle.brand} {selectedVehicle.model}
-                  </span>
-                  <span className="px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] font-black uppercase rounded-xl border border-primary/20 tracking-wider whitespace-nowrap">
-                    EN USO
-                  </span>
-                  <ChevronDown className="w-5 h-5 text-neutral-300 group-hover:text-primary transition-colors" />
-                </div>
-                <p className="text-sm text-on-surface-muted font-medium mt-0.5">
+                <p className="text-sm text-on-surface-muted font-medium">
                   {selectedVehicle.plate} • {selectedVehicle.year}
                 </p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] font-black uppercase rounded-lg border border-primary/20 tracking-wider">
+                    En uso
+                  </span>
+                  <button className="flex items-center gap-1 text-[10px] font-bold text-on-surface-muted hover:text-primary transition-colors">
+                    Cambiar <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
@@ -159,38 +159,50 @@ export default function DashboardPage() {
             </div>
             <h3 className="text-[10px] font-bold text-on-surface-muted uppercase tracking-wider">Odómetro</h3>
           </div>
-          <p className="text-4xl font-black tracking-tighter text-on-surface">
+          <p className="text-2xl lg:text-4xl font-black tracking-tighter text-on-surface">
             {selectedVehicle ? (
               <>
                 {selectedVehicle.currentMileage?.toLocaleString('es-ES') ?? '—'}
-                <span className="text-lg font-bold text-neutral-300 ml-1">km</span>
+                <span className="text-sm lg:text-lg font-bold text-neutral-300 ml-1">km</span>
               </>
             ) : (
               <span className="text-neutral-300">—</span>
             )}
           </p>
-          <p className="text-[10px] text-primary font-bold mt-2 flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" />
-            +240 km esta semana
-          </p>
+          {kmThisMonth !== null && (
+            <p className="text-[10px] text-primary font-bold mt-2 flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" />
+              +{kmThisMonth.toLocaleString('es-ES')} km este mes
+            </p>
+          )}
         </div>
 
-        {/* Card 3 — Monthly Spend */}
+        {/* Card 3 — Combustible mensual */}
         <div className="col-span-1 bg-surface-card p-6 rounded-xl shadow-[0_20px_40px_-12px_rgba(18,28,42,0.08)] hover:bg-neutral-50 transition-all">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 bg-surface-low rounded-xl flex items-center justify-center">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="2" y="5" width="20" height="14" rx="2" />
-                <path d="M2 10h20" strokeLinecap="round" />
-              </svg>
+              <Fuel className="w-5 h-5 text-primary" />
             </div>
-            <h3 className="text-[10px] font-bold text-on-surface-muted uppercase tracking-wider">Gasto Mensual</h3>
+            <h3 className="text-[10px] font-bold text-on-surface-muted uppercase tracking-wider">Combustible</h3>
           </div>
-          <p className="text-4xl font-black tracking-tighter text-on-surface">$2,840</p>
-          <p className="text-[10px] text-error font-bold mt-2 flex items-center gap-1">
-            <AlertTriangle className="w-3 h-3" />
-            12% sobre el presupuesto
+
+          {/* Consumo promedio — dato principal */}
+          <p className="text-2xl lg:text-4xl font-black tracking-tighter text-on-surface">
+            {fuelStats?.avgConsumption != null ? (
+              <>{fuelStats.avgConsumption.toFixed(1)}<span className="text-sm lg:text-lg font-bold text-neutral-300 ml-1">L/100km</span></>
+            ) : (
+              <span className="text-neutral-300">—</span>
+            )}
           </p>
+          <p className="text-[10px] text-on-surface-muted font-bold mt-1">consumo promedio histórico</p>
+
+          {/* Litros cargados */}
+          {fuelStats && (
+            <p className="text-[10px] text-primary font-bold mt-2 flex items-center gap-1">
+              <TrendingUp className="w-3 h-3" />
+              {fuelStats.litersThisMonth.toLocaleString('es-ES', { maximumFractionDigits: 1 })} L cargados este mes
+            </p>
+          )}
         </div>
 
         {/* Card 4 — Alerts (row-span-2) */}
