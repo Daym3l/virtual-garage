@@ -6,15 +6,12 @@ import { useVehicles } from '@/hooks/useVehicles'
 import { useAppStore } from '@/store/app-store'
 import { useMonthlyMileage } from '@/hooks/useMonthlyMileage'
 import { useMonthlyFuel } from '@/hooks/useMonthlyFuel'
+import { useConsumptionChart } from '@/hooks/useConsumptionChart'
+import { useMaintenanceAlerts } from '@/hooks/useMaintenanceAlerts'
 import ConsumptionChart from './_components/consumption-chart'
 import { toImageSrc } from '@/lib/utils/image'
+import { useState } from 'react'
 
-// ─── Dummy alert data until alerts module is built ────────────────────────────
-const mockAlerts = [
-  { id: 1, title: 'Cambio Aceite',       subtitle: 'Vence en 250 km',    level: 'error'    as const },
-  { id: 2, title: 'Revisión Neumáticos', subtitle: 'Próximo Martes',     level: 'warning'  as const },
-  { id: 3, title: 'Renovación Seguro',   subtitle: 'En 15 días',         level: 'primary'  as const },
-]
 
 const alertBorder: Record<string, string> = {
   error:   'border-l-error',
@@ -25,11 +22,16 @@ const alertBorder: Record<string, string> = {
 export default function DashboardPage() {
   const { vehicles, loading } = useVehicles()
   const selectedVehicleId = useAppStore((s) => s.selectedVehicleId)
-  const setSelectedVehicleId = useAppStore((s) => s.setSelectedVehicleId)
 
   const selectedVehicle = vehicles.find((v) => v.id === selectedVehicleId) ?? vehicles[0]
   const { kmThisMonth } = useMonthlyMileage(selectedVehicle?.id)
   const { stats: fuelStats } = useMonthlyFuel(selectedVehicle?.id)
+  const { monthly, annual, loading: chartLoading } = useConsumptionChart(selectedVehicle?.id)
+  const [chartView, setChartView] = useState<'monthly' | 'annual'>('monthly')
+  const { alerts, loading: alertsLoading } = useMaintenanceAlerts(
+    selectedVehicle?.id,
+    selectedVehicle?.currentMileage ?? 0
+  )
 
   // ── Empty state ─────────────────────────────────────────────────────────────
   if (!loading && vehicles.length === 0) {
@@ -206,46 +208,67 @@ export default function DashboardPage() {
         </div>
 
         {/* Card 4 — Alerts (row-span-2) */}
-        <div className="col-span-2 lg:col-span-1 lg:row-span-2 bg-surface-card p-6 rounded-xl shadow-[0_20px_40px_-12px_rgba(18,28,42,0.08)]">
+        <div className="col-span-2 lg:col-span-1 lg:row-span-2 bg-surface-card p-6 rounded-xl shadow-[0_20px_40px_-12px_rgba(18,28,42,0.08)] flex flex-col h-full">
           <h3 className="text-[10px] font-bold text-on-surface-muted uppercase tracking-widest mb-6">
             Alertas Próximas
           </h3>
-          <div className="space-y-4">
-            {mockAlerts.map((alert) => (
-              <div key={alert.id} className={`pl-4 border-l-4 ${alertBorder[alert.level]} py-1`}>
-                <p className="text-sm font-bold text-on-surface">{alert.title}</p>
-                <p className="text-[11px] text-on-surface-muted">{alert.subtitle}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6">
-            <button className="w-full py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors border border-primary/20">
-              Ver Calendario
-            </button>
+          {alertsLoading ? (
+            <div className="space-y-4 animate-pulse">
+              {[1,2,3].map((i) => <div key={i} className="h-10 bg-neutral-100 rounded-lg" />)}
+            </div>
+          ) : alerts.length === 0 ? (
+            <p className="text-xs text-on-surface-muted text-center py-6">Sin alertas activas</p>
+          ) : (
+            <div className="space-y-4">
+              {alerts.map((alert) => (
+                <div key={alert.id} className={`pl-4 border-l-4 ${alertBorder[alert.level]} py-1`}>
+                  <p className="text-sm font-bold text-on-surface">{alert.title}</p>
+                  <p className="text-[11px] text-on-surface-muted">
+                  {alert.subtitle.prefix}<span className="font-black">{alert.subtitle.km}</span>{alert.subtitle.suffix}
+                </p>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="mt-auto pt-6">
+            <Link href="/maintenance" className="block w-full py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-xl transition-colors border border-primary/20 text-center">
+              Ver Mantenimientos
+            </Link>
           </div>
         </div>
 
         {/* Card 5 — Consumption Chart (col-span-3) */}
-        <div className="col-span-2 lg:col-span-3 bg-surface-card p-6 lg:p-8 rounded-xl shadow-[0_20px_40px_-12px_rgba(18,28,42,0.08)]">
+        <div className="col-span-2 lg:col-span-3 lg:row-span-2 bg-surface-card p-6 lg:p-8 rounded-xl shadow-[0_20px_40px_-12px_rgba(18,28,42,0.08)] flex flex-col h-full">
           <div className="flex justify-between items-start mb-8">
             <div>
               <h3 className="text-[10px] font-bold text-on-surface-muted uppercase tracking-widest">
                 Consumo de Combustible
               </h3>
               <p className="text-sm text-on-surface-muted font-medium mt-1">
-                Histórico de los últimos 6 meses (L/100km)
+                {chartView === 'monthly' ? 'Últimos 6 meses (L/100km)' : 'Por año (L/100km)'}
               </p>
             </div>
             <div className="flex gap-2 shrink-0">
-              <span className="px-3 py-1 bg-surface-low text-[10px] font-bold rounded-full text-primary cursor-pointer">
+              <button
+                onClick={() => setChartView('monthly')}
+                className={`px-3 py-1 text-[10px] font-bold rounded-full transition-colors ${chartView === 'monthly' ? 'bg-surface-low text-primary' : 'text-on-surface-muted hover:bg-neutral-50'}`}
+              >
                 MENSUAL
-              </span>
-              <span className="px-3 py-1 bg-transparent text-[10px] font-bold rounded-full text-on-surface-muted cursor-pointer hover:bg-neutral-50">
+              </button>
+              <button
+                onClick={() => setChartView('annual')}
+                className={`px-3 py-1 text-[10px] font-bold rounded-full transition-colors ${chartView === 'annual' ? 'bg-surface-low text-primary' : 'text-on-surface-muted hover:bg-neutral-50'}`}
+              >
                 ANUAL
-              </span>
+              </button>
             </div>
           </div>
-          <ConsumptionChart />
+          <div className="flex-1 min-h-0">
+            <ConsumptionChart
+              data={chartView === 'monthly' ? monthly : annual}
+              loading={chartLoading}
+            />
+          </div>
         </div>
       </div>
 
